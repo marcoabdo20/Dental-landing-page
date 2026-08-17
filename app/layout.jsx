@@ -2,7 +2,7 @@ import './globals.css';
 import IconSprite from '@/components/IconSprite';
 
 export const metadata = {
-  title: 'Dentlora — Care for your smile. Confidently.',
+  title: 'Dentlora Care for your smile. Confidently.',
   description:
     'Find trusted dentists, book appointments, follow your treatment plan, and keep all your dental records organized.',
   icons: {
