@@ -1,6 +1,6 @@
-# Brand assets needed
+# Brand-assets needed
 
-Copy the original "brand assets" images into this folder (`public/brand-assets/`)
+Copy the original "brand-assets" images into this folder (`public/brand-assets/`)
 using these exact file names (renamed only to remove spaces, nothing else changed):
 
 - dentlora-wordmark.png

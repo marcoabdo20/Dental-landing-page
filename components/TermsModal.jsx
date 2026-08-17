@@ -3,11 +3,18 @@
 import { useEffect, useRef } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 
+/**
+ * Terms & Conditions modal.
+ * Controlled component: pass `open` + `onClose` from the parent (Footer).
+ * Content comes entirely from translations.js -> t.footer.terms, so it
+ * switches language automatically with the rest of the site.
+ */
 export default function TermsModal({ open, onClose }) {
     const { t } = useLanguage();
     const dialogRef = useRef(null);
     const terms = t.footer.terms;
 
+    // keep the native <dialog> element in sync with the `open` prop
     useEffect(() => {
         const dialog = dialogRef.current;
         if (!dialog) return;
@@ -19,6 +26,7 @@ export default function TermsModal({ open, onClose }) {
         }
     }, [open]);
 
+    // close on backdrop click (click landing on the <dialog> itself, not the card)
     const handleDialogClick = (e) => {
         if (e.target === dialogRef.current) {
             onClose();
@@ -28,30 +36,35 @@ export default function TermsModal({ open, onClose }) {
     return (
         <dialog
             ref={dialogRef}
+            className="
+        w-[calc(100vw-24px)]
+        max-w-[760px]
+        max-h-[80vh]
+
+        overflow-hidden
+        rounded-[28px]
+
+        border-0
+        bg-transparent
+        p-0
+
+        shadow-[0_25px_70px_rgba(32,55,90,0.25)]
+
+        backdrop:bg-[rgba(45,67,105,0.48)]
+        backdrop:backdrop-blur-[14px]
+        backdrop:backdrop-saturate-[120%]
+
+        sm:w-[calc(100vw-40px)]
+      "
             id="terms-modal"
             aria-labelledby="terms-modal-title"
             onClose={onClose}
             onClick={handleDialogClick}
             onCancel={(e) => {
+                // native ESC handling - let it close, then sync React state
                 e.preventDefault();
                 onClose();
             }}
-            className="
-        w-[calc(100vw-32px)]
-        max-w-[760px]
-        max-h-[80vh]
-        overflow-visible
-        rounded-[24px]
-        border-0
-        bg-transparent
-        p-0
-
-        backdrop:bg-[rgba(26,43,75,0.42)]
-        backdrop:backdrop-blur-[14px]
-        backdrop:backdrop-saturate-[120%]
-
-        motion-safe:animate-[modal-in_260ms_ease-out]
-      "
         >
             <div
                 className="
@@ -60,59 +73,62 @@ export default function TermsModal({ open, onClose }) {
           flex-col
           overflow-hidden
 
-          rounded-[24px]
+          rounded-[28px]
 
           border
-          border-white/85
+          border-white/80
 
-          bg-white/[0.72]
+          bg-[rgba(245,247,253,0.94)]
 
-          shadow-[0_20px_60px_rgba(26,43,75,0.18),inset_0_1px_0_rgba(255,255,255,0.75)]
+          shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]
 
-          backdrop-blur-[34px]
-          backdrop-saturate-[180%]
+          backdrop-blur-[30px]
         "
             >
-                {/* Header */}
+                {/* =========================
+            Modal Header
+        ========================== */}
                 <div
                     className="
             flex
             flex-none
-            items-start
+            items-center
             justify-between
             gap-4
 
             border-b
-            border-white/65
+            border-white/80
 
-            bg-white/[0.34]
+            bg-[rgba(255,255,255,0.45)]
 
-            px-6
-            pb-4
-            pt-6
+            px-5
+            py-5
 
-            backdrop-blur-xl
+            sm:px-6
+            sm:py-5
           "
                 >
                     <h2
-                        id="terms-modal-title"
                         className="
               m-0
+
               font-serif
-              text-[22px]
+              text-[30px]
               font-semibold
-              leading-[1.35]
-              tracking-tight
-              text-[#26364F]
+              leading-tight
+              tracking-[-0.02em]
+
+              text-[#243858]
+
+              sm:text-[38px]
             "
+                        id="terms-modal-title"
                     >
                         {terms.modalTitle}
                     </h2>
 
                     <button
                         type="button"
-                        aria-label={terms.closeAria}
-                        onClick={onClose}
                         className="
               grid
               h-[38px]
@@ -123,185 +139,180 @@ export default function TermsModal({ open, onClose }) {
               rounded-full
 
               border
-              border-[#DDE3EF]
+              border-white
 
               bg-white/75
 
-              text-[#66758F]
+              text-[#7B8DA8]
 
-              shadow-[0_2px_8px_rgba(26,43,75,0.06)]
+              shadow-[0_2px_8px_rgba(36,56,88,0.06)]
 
               transition-all
               duration-200
               ease-out
 
-              hover:-translate-y-px
+              hover:-translate-y-[1px]
               hover:bg-white
               hover:text-[#2580C4]
+              hover:shadow-[0_4px_12px_rgba(36,56,88,0.12)]
+
+              active:scale-95
 
               focus:outline-none
               focus:ring-2
-              focus:ring-[#2580C4]/40
+              focus:ring-[#2580C4]/30
             "
+                        data-modal-close
+                        aria-label={terms.closeAria}
+                        onClick={onClose}
                     >
-                        <svg class="icon icon-sm" aria-hidden="true"><use href="#i-close" /></svg>
+                        <svg className="icon icon-sm" aria-hidden="true"><use href="#i-close" /></svg>
 
                     </button>
                 </div>
 
-                {/* Body */}
+                {/* =========================
+            Modal Body
+        ========================== */}
                 <div
                     className="
+            terms
+
             min-h-0
             flex-1
             overflow-y-auto
 
             overscroll-contain
 
-            px-6
-            py-6
+            px-5
+            py-7
+
+            sm:px-6
+            sm:py-8
 
             [scrollbar-width:thin]
-            [scrollbar-color:#CBD5E1_transparent]
-
-            sm:px-7
-            sm:py-7
+            [scrollbar-color:#9BA8BC_transparent]
           "
                 >
-                    {/* Arabic language note */}
-                    <div
-                        className="
-              mb-5
-              hidden
+                    {terms.sections.map((section, sIdx) => (
+                        <div
+                            key={sIdx}
+                            className="mb-8 last:mb-2"
+                        >
+                            {/* Section Heading */}
+                            <h3
+                                className="
+                  mb-2
 
-              rounded-xl
+                  font-serif
+                  text-[18px]
+                  font-semibold
+                  leading-[1.4]
 
-              border
-              border-[#E2E7F0]
+                  text-[#243858]
 
-              bg-white/55
+                  sm:text-[20px]
+                "
+                            >
+                                {section.heading}
+                            </h3>
 
-              px-4
-              py-3
+                            {section.blocks.map((block, bIdx) => {
+                                if (block.type === 'p') {
+                                    return (
+                                        <p
+                                            key={bIdx}
+                                            className="
+                        mb-3
+                        text-[15px]
+                        leading-[1.7]
 
-              text-right
-              text-sm
-              leading-7
-              text-[#52627A]
+                        text-[#5C708F]
 
-              [dir='rtl']:block
-            "
-                    >
-                        {terms.modalTitle}
-                    </div>
+                        sm:text-[15.5px]
+                      "
+                                        >
+                                            {block.text}
+                                        </p>
+                                    );
+                                }
 
-                    <div className="space-y-4">
-                        {terms.sections.map((section, sIdx) => (
-                            <section key={sIdx}>
-                                {/* Section Heading */}
-                                <h3
-                                    className="
-                    mt-8
-                    mb-2
+                                if (block.type === 'h4') {
+                                    return (
+                                        <h4
+                                            key={bIdx}
+                                            className="
+                        mb-1
+                        mt-5
 
-                    font-serif
-                    text-xl
-                    font-semibold
-                    leading-[1.35]
+                        text-[15px]
+                        font-semibold
+                        leading-[1.5]
 
-                    text-[#26364F]
+                        text-[#334A6C]
+                      "
+                                        >
+                                            {block.text}
+                                        </h4>
+                                    );
+                                }
 
-                    first:mt-0
-                  "
-                                >
-                                    {section.heading}
-                                </h3>
+                                if (block.type === 'ul') {
+                                    return (
+                                        <ul
+                                            key={bIdx}
+                                            className="
+                        mb-4
 
-                                <div className="space-y-2">
-                                    {section.blocks.map((block, bIdx) => {
-                                        if (block.type === 'p') {
-                                            return (
-                                                <p
-                                                    key={bIdx}
+                        grid
+                        list-disc
+                        gap-2
+
+                        pl-[1.15em]
+
+                        text-[15px]
+                        leading-[1.7]
+
+                        marker:text-[#8D9DB5]
+                      "
+                                        >
+                                            {block.items.map((item, iIdx) => (
+                                                <li
+                                                    key={iIdx}
                                                     className="
-                            text-[15.5px]
-                            leading-[1.7]
-                            text-[#52627A]
+                            pl-1
+                            text-[#5C708F]
                           "
                                                 >
-                                                    {block.text}
-                                                </p>
-                                            );
-                                        }
+                                                    {item}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    );
+                                }
 
-                                        if (block.type === 'h4') {
-                                            return (
-                                                <h4
-                                                    key={bIdx}
-                                                    className="
-                            mt-5
-                            text-[15px]
-                            font-semibold
-                            leading-[1.5]
-                            text-[#26364F]
-                          "
-                                                >
-                                                    {block.text}
-                                                </h4>
-                                            );
-                                        }
-
-                                        if (block.type === 'ul') {
-                                            return (
-                                                <ul
-                                                    key={bIdx}
-                                                    className="
-                            grid
-                            list-disc
-                            gap-2
-                            pl-[1.15em]
-
-                            text-[15.5px]
-                            leading-[1.7]
-
-                            marker:text-[#9AA8BE]
-                          "
-                                                >
-                                                    {block.items.map((item, iIdx) => (
-                                                        <li
-                                                            key={iIdx}
-                                                            className="
-                                pl-1
-                                text-[#52627A]
-                              "
-                                                        >
-                                                            {item}
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            );
-                                        }
-
-                                        return null;
-                                    })}
-                                </div>
-                            </section>
-                        ))}
-                    </div>
+                                return null;
+                            })}
+                        </div>
+                    ))}
 
                     {/* Version */}
                     <p
                         className="
+              terms-version
+
               mt-8
 
               border-t
-              border-[#E2E6EE]
+              border-[#DCE2EC]
 
               pt-4
 
+              text-center
               text-[13px]
               tracking-[0.04em]
-              text-[#8491A5]
+
+              text-[#8A98AD]
             "
                     >
                         {terms.version}
