@@ -1,9 +1,12 @@
 'use client';
 
+import { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
+import TermsModal from './TermsModal';
 
 export default function Footer() {
   const { t, lang, setLang } = useLanguage();
+  const [isTermsOpen, setIsTermsOpen] = useState(false);
 
   return (
     <footer className="site-footer">
@@ -63,7 +66,16 @@ export default function Footer() {
         <hr className="mt-11 border-0 h-px" style={{ background: 'var(--hairline)' }} />
 
         <div className="mt-7 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
-          <p className="text-[15px]" style={{ color: 'var(--ink-faint)' }}>{t.footer.copyright}</p>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+            <p className="text-[15px]" style={{ color: 'var(--ink-faint)' }}>{t.footer.copyright}</p>
+            <button
+              type="button"
+              className="footer-link text-[15px] underline-offset-4 hover:underline"
+              onClick={() => setIsTermsOpen(true)}
+            >
+              {t.footer.termsLink}
+            </button>
+          </div>
 
           <div className="lang-switch">
             <svg className="icon icon-sm" style={{ color: 'var(--brand)' }} aria-hidden="true"><use href="#i-globe" /></svg>
@@ -88,6 +100,8 @@ export default function Footer() {
           </div>
         </div>
       </div>
+
+      <TermsModal open={isTermsOpen} onClose={() => setIsTermsOpen(false)} />
     </footer>
   );
 }
