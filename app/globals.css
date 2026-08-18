@@ -1262,6 +1262,10 @@ html[dir='rtl'] .hero-art {
   background-position: center;
 }
 
+html[dir='rtl'] .cta-card::before {
+  transform: scaleX(-1);
+}
+
 .cta-copy {
   max-width: 100%;
 }
@@ -1885,6 +1889,10 @@ a.phone-note-cta:hover { transform: translateY(-2px); box-shadow: var(--shadow-m
     background-position: 26% center;
     background-color: #e8ebfb;
   }
+
+  html[dir='rtl'] .journey-art {
+  transform: scaleX(-1);
+}
 
   .journey { min-height: min(75vw, 1200px); }
 
