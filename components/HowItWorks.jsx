@@ -29,10 +29,14 @@ export default function HowItWorks() {
           </p>
         </div>
 
-        <div className="steps-panel mt-[70px] reveal" style={{ transitionDelay: '160ms' }}>
+        <div className="steps-panel mt-[70px]">
           <ol className="steps-grid">
             {h.steps.map((step, i) => (
-              <li className="step" key={i}>
+              <li
+                className="step reveal"
+                key={i}
+                style={{ transitionDelay: `${200 + i * 110}ms` }}
+              >
                 <span className="icon-orb"><svg className="icon icon-lg" aria-hidden="true"><use href={`#${icons[i]}`} /></svg></span>
                 <div className="step-body">
                   <p className="step-num">{String(i + 1).padStart(2, '0')}</p>
