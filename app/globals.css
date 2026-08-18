@@ -785,6 +785,10 @@ h1, h2, h3, h4, h5, blockquote {
   mask-image: linear-gradient(to bottom, #000 calc(100% - 120px), transparent 100%);
 }
 
+html[dir='rtl'] .hero-art {
+  transform: scaleX(-1);
+}
+
 .hero-wash {
   position: absolute;
   inset: 0;

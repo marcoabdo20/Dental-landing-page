@@ -2,7 +2,7 @@
 
 import { useLanguage } from '@/context/LanguageContext';
 
-export default function MobileNav() {
+export default function MobileNav({ onTermsClick }) {
   const { t } = useLanguage();
 
   return (
@@ -13,9 +13,21 @@ export default function MobileNav() {
       <a href="#about">{t.nav.about}</a>
       <a href="#how-it-works">{t.nav.howItWorks}</a>
       <a href="#contact">{t.nav.contact}</a>
-      <a href="#for-patients" className="btn btn-primary mt-7 !border-transparent">
+      <button
+        type="button"
+        className="nav-link"
+        onClick={onTermsClick}
+      >
+        {t.nav.TermsModal}
+      </button>
+      <a
+        href="#for-patients"
+        className="btn btn-primary mt-7 !border-transparent"
+      >
         {t.nav.findDentist}
-        <svg className="icon icon-sm" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+        <svg className="icon icon-sm" aria-hidden="true">
+          <use href="#i-arrow-right" />
+        </svg>
       </a>
     </div>
   );
