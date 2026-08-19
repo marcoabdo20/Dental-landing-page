@@ -11,7 +11,7 @@ export default function AppShowcase() {
       <div className="shell">
         <div className="showcase-scroll">
           <div className="phone-stage reveal" style={{ transitionDelay: '180ms' }}>
-            <div className="app-showcase-head">
+            <div className="app-showcase-head text-left rtl:text-right">
               <span className="pill pill-tag">
                 <svg className="icon icon-xs" aria-hidden="true"><use href="#i-sparkles" /></svg>
                 {t.appShowcase.badge}
