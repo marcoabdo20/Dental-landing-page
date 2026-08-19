@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -122,6 +124,20 @@ body::after {
 h1, h2, h3, h4, h5, blockquote {
   font-family: 'Spectral', Georgia, serif;
   color: var(--ink-strong);
+}
+
+/* ============================================================
+   ARABIC TYPOGRAPHY — Cairo
+   English typography (Inter / Spectral) is untouched; this override
+   only applies when the page is in Arabic (LanguageContext sets
+   <html lang="ar" dir="rtl">). It overrides every font-family on the
+   page, including the ones set deeper on specific component classes
+   (.btn, .footer-link, .t-overline, etc), since those would otherwise
+   keep using Inter/Spectral.
+   ============================================================ */
+html[lang='ar'] body,
+html[lang='ar'] * {
+  font-family: 'Cairo', system-ui, sans-serif !important;
 }
 
 /* ============================================================
