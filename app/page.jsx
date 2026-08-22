@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import Header from '@/components/Header';
 import MobileNav from '@/components/MobileNav';
@@ -19,16 +20,23 @@ import { LanguageProvider } from '@/context/LanguageContext';
 function PageContent() {
   useSiteInteractions();
 
+  const router = useRouter();
   const [isTermsOpen, setIsTermsOpen] = useState(false);
+
+  const goToPrivacyPolicy = () => {
+    router.push('/components/PrivacyPolicyModal');
+  };
 
   return (
     <>
       <Header
         onTermsClick={() => setIsTermsOpen(true)}
+        onPrivacyClick={goToPrivacyPolicy}
       />
 
       <MobileNav
         onTermsClick={() => setIsTermsOpen(true)}
+        onPrivacyClick={goToPrivacyPolicy}
       />
 
       <main>
@@ -40,7 +48,10 @@ function PageContent() {
         <HowItWorks />
       </main>
 
-      <Footer />
+      <Footer
+        onTermsClick={() => setIsTermsOpen(true)}
+        onPrivacyClick={goToPrivacyPolicy}
+      />
 
       <TermsModal
         open={isTermsOpen}

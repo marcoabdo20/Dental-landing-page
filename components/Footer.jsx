@@ -1,10 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
 import TermsModal from './TermsModal';
 
-export default function Footer() {
+export default function Footer({ onTermsClick, onPrivacyClick }) {
   const { t, lang, setLang } = useLanguage();
   const [isTermsOpen, setIsTermsOpen] = useState(false);
 
@@ -39,22 +40,22 @@ export default function Footer() {
               {/* TODO: replace each href with the real Dentlora profile URL before going live */}
               <ul className="social-row">
                 <li>
-                  <a href="#" className="social-link" aria-label={t.footer.social.instagram} rel="noopener noreferrer">
+                  <a href="https://www.instagram.com/dentlora.app?igsh=MWlzYzVwamFhOG5ueg==" className="social-link" aria-label={t.footer.social.instagram} rel="noopener noreferrer">
                     <svg className="icon icon-sm" aria-hidden="true"><use href="#i-instagram" /></svg>
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="social-link" aria-label={t.footer.social.linkedin} rel="noopener noreferrer">
+                  <a href="https://www.linkedin.com/company/dentlora/" className="social-link" aria-label={t.footer.social.linkedin} rel="noopener noreferrer">
                     <svg className="icon icon-sm" aria-hidden="true"><use href="#i-linkedin" /></svg>
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="social-link" aria-label={t.footer.social.facebook} rel="noopener noreferrer">
+                  <a href="https://www.facebook.com/share/197yHT4fSu/?mibextid=wwXIfr" className="social-link" aria-label={t.footer.social.facebook} rel="noopener noreferrer">
                     <svg className="icon icon-sm" aria-hidden="true"><use href="#i-facebook" /></svg>
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="social-link" aria-label={t.footer.social.tiktok} rel="noopener noreferrer">
+                  <a href="https://www.tiktok.com/@dentlora.app?_r=1&_t=ZN-98zdJpLnPOw" className="social-link" aria-label={t.footer.social.tiktok} rel="noopener noreferrer">
                     <svg className="icon icon-sm" aria-hidden="true"><use href="#i-tiktok" /></svg>
                   </a>
                 </li>
@@ -68,6 +69,15 @@ export default function Footer() {
         <div className="mt-7 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
             <p className="text-[15px]" style={{ color: 'var(--ink-faint)' }}>{t.footer.copyright}</p>
+
+            <button
+              type="button"
+              onClick={onPrivacyClick}
+              className="footer-link text-[15px] underline-offset-4 hover:underline"
+            >
+              {t.privacyPolicy.title}
+            </button>
+
             <button
               type="button"
               className="footer-link text-[15px] underline-offset-4 hover:underline"
@@ -75,6 +85,7 @@ export default function Footer() {
             >
               {t.footer.termsLink}
             </button>
+
           </div>
 
           <div className="lang-switch">
