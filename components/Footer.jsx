@@ -8,7 +8,9 @@ import TermsModal from './TermsModal';
 export default function Footer({ onTermsClick, onPrivacyClick }) {
   const { t, lang, setLang } = useLanguage();
   const [isTermsOpen, setIsTermsOpen] = useState(false);
-
+  const goToPrivacyPolicy = () => {
+  router.push('/privacy-policy');
+};
   return (
     <footer className="site-footer">
       <div className="section-art footer-art"></div>

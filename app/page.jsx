@@ -24,7 +24,7 @@ function PageContent() {
   const [isTermsOpen, setIsTermsOpen] = useState(false);
 
   const goToPrivacyPolicy = () => {
-    router.push('/components/PrivacyPolicyModal');
+    router.push('/Privacy-Policy');
   };
 
   return (

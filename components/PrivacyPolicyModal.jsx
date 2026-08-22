@@ -146,7 +146,11 @@ export default function PrivacyPolicyPage() {
     return null;
   }
 
-  const contactLabel = lang === 'ar' ? 'تواصل مع الدعم' : 'Contact Support';
+  const contactLabel =
+    lang === 'ar'
+      ? 'تواصل مع الدعم'
+      : 'Contact Support';
+
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--surface-page)' }}>
