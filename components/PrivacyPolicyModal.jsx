@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
 import Footer from './Footer';
@@ -49,7 +50,8 @@ function TableOfContents({ sections, activeLabel }) {
   return (
     <nav
       aria-label={activeLabel}
-      className="surface-elevated hidden lg:block sticky top-28 max-h-[70vh] w-64 shrink-0 overflow-y-auto p-5 [scrollbar-width:thin] [scrollbar-color:#9BA8BC_transparent]"
+      data-reveal
+      className="reveal surface-elevated hidden lg:block sticky top-28 max-h-[70vh] w-64 shrink-0 overflow-y-auto p-5 [scrollbar-width:thin] [scrollbar-color:#9BA8BC_transparent]"
     >
       <p
         className="mb-3 text-xs font-semibold uppercase"
@@ -81,17 +83,19 @@ function TableOfContents({ sections, activeLabel }) {
 /**
  * Legal-page top bar — logo + Back to Home + Contact Support.
  * Matches the sticky header used on the Terms of Service page.
+ * Slides down and fades in gently on first paint.
  */
 function LegalTopBar({ backHomeLabel, contactLabel }) {
   return (
     <div
-      className="sticky top-0 z-20"
+      className="page-enter sticky top-0 z-20"
       style={{
         background: 'rgba(240, 241, 251, 0.78)',
         backdropFilter: 'blur(22px) saturate(160%)',
         WebkitBackdropFilter: 'blur(22px) saturate(160%)',
         borderBottom: '1px solid var(--hairline)',
         boxShadow: '0 1px 0 rgba(255,255,255,0.6), 0 8px 30px rgba(74,96,190,0.08)',
+        animationDelay: '0ms',
       }}
     >
       <div className="shell-wide flex items-center justify-between gap-4 py-3.5">
@@ -110,7 +114,7 @@ function LegalTopBar({ backHomeLabel, contactLabel }) {
             <svg
               className="icon icon-sm"
               aria-hidden="true"
-              style={{ color: "#000", transform: "rotate(180deg)" }}
+              style={{ color: '#000', transform: 'rotate(180deg)' }}
             >
               <use href="#i-arrow-right" />
             </svg>
@@ -137,33 +141,72 @@ function LegalTopBar({ backHomeLabel, contactLabel }) {
  * with the active language via LanguageContext. Visual style
  * mirrors the Terms of Service page: sticky legal top bar,
  * per-section white cards, and the left table-of-contents sidebar.
+ *
+ * Animation:
+ * - Top bar + hero title/meta: a gentle one-shot fade/slide-in on
+ *   first paint (`.page-enter`, staggered via inline delays).
+ * - TOC + each section card: fade/slide up as they scroll into
+ *   view, staggered per card (`.reveal` from globals.css, toggled
+ *   to `.is-inview` by a local IntersectionObserver below).
  */
 export default function PrivacyPolicyPage() {
   const { t, lang } = useLanguage();
   const policy = t?.privacyPolicy;
+  const scopeRef = useRef(null);
+
+  useEffect(() => {
+    const root = scopeRef.current;
+    if (!root) return;
+
+    const elements = Array.from(root.querySelectorAll('.reveal'));
+    if (elements.length === 0) return;
+
+    // Prefers-reduced-motion: reveal everything immediately, no observer needed.
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      elements.forEach((el) => el.classList.add('is-inview'));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-inview');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -64px 0px' }
+    );
+
+    elements.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [policy]);
 
   if (!policy) {
     return null;
   }
 
-  const contactLabel =
-    lang === 'ar'
-      ? 'تواصل مع الدعم'
-      : 'Contact Support';
-
+  const contactLabel = lang === 'ar' ? 'تواصل مع الدعم' : 'Contact Support';
 
   return (
-    <div className="min-h-screen" style={{ background: 'var(--surface-page)' }}>
+    <div ref={scopeRef} className="min-h-screen" style={{ background: 'var(--surface-page)' }}>
       <LegalTopBar backHomeLabel={policy.backHome} contactLabel={contactLabel} />
 
       {/* =========================
           Hero / Header
       ========================== */}
       <header className="shell-wide pt-12 sm:pt-16">
-        <h1 className="t-h2 mb-4">{policy.title}</h1>
+        <h1 className="page-enter t-h2 mb-4" style={{ animationDelay: '80ms' }}>
+          {policy.title}
+        </h1>
 
         {Array.isArray(policy.meta) && (
-          <div className="flex max-w-2xl flex-col gap-2.5 t-body">
+          <div
+            className="page-enter flex max-w-2xl flex-col gap-2.5 t-body"
+            style={{ animationDelay: '160ms' }}
+          >
             {policy.meta.map((item, i) => (
               <p key={i} className="m-0">
                 <Segments segments={[item]} />
@@ -203,7 +246,9 @@ export default function PrivacyPolicyPage() {
                   <div
                     key={sIdx}
                     id={anchor}
-                    className="surface-elevated scroll-mt-28 p-6 sm:p-8"
+                    data-reveal
+                    className="reveal surface-elevated scroll-mt-28 p-6 transition-transform duration-300 ease-out hover:-translate-y-0.5 sm:p-8"
+                    style={{ transitionDelay: `${Math.min(sIdx, 5) * 60}ms` }}
                   >
                     {/* Section Heading */}
                     {section.heading && (
@@ -271,20 +316,53 @@ export default function PrivacyPolicyPage() {
                 );
               })}
           </div>
-
-          {/* Footer */}
-          {/* {policy.footer && (
-            <p
-              className="mt-10 text-center text-[13px]"
-              style={{ letterSpacing: '0.04em', color: 'var(--ink-faint)' }}
-            >
-              {policy.footer}
-            </p>
-          )} */}
-
         </div>
       </main>
+
       <Footer />
+
+      {/*
+        Local, self-contained keyframes for the one-shot page-load
+        animation. Scoped to this file via styled-jsx (built into
+        Next.js) so nothing in globals.css needs to change.
+      */}
+      <style jsx>{`
+        .page-enter {
+          animation: privacyPageEnter 620ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+        }
+
+        @keyframes privacyPageEnter {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        header .page-enter {
+          animation-name: privacyHeroEnter;
+        }
+
+        @keyframes privacyHeroEnter {
+          from {
+            opacity: 0;
+            transform: translateY(14px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .page-enter {
+            animation: none;
+          }
+        }
+      `}</style>
     </div>
   );
 }
