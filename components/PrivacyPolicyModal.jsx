@@ -107,7 +107,13 @@ function LegalTopBar({ backHomeLabel, contactLabel }) {
 
         <div className="flex items-center gap-2.5 sm:gap-3">
           <Link href="/" className="btn btn-ghost btn-sm !w-auto">
-            
+            <svg
+              className="icon icon-sm"
+              aria-hidden="true"
+              style={{ color: "#000", transform: "rotate(180deg)" }}
+            >
+              <use href="#i-arrow-right" />
+            </svg>
             <span className="hidden sm:inline">{backHomeLabel}</span>
           </Link>
 
@@ -271,7 +277,7 @@ export default function PrivacyPolicyPage() {
               {policy.footer}
             </p>
           )} */}
-          
+
         </div>
       </main>
       <Footer />
